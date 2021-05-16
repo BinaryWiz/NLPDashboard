@@ -1,28 +1,41 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app-container">
+    <navbar :modelName="currentModelName" :modelOptions="modelOptions"> </navbar>
+    <batch-data-container />
+    <graph-container />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import Navbar from './components/Navbar'
+import BatchDataContainer from './components/BatchDataContainer'
+import GraphContainer from './components/GraphContainer'
 export default {
-  name: 'App',
+  data () {
+    return {
+      currentModelName: 'TransformerCharacterBERT',
+      modelOptions: ['TransformerCharacterBERT', 'CharacterBERT', 'ScaledCharacterBERT']
+    }
+  },
   components: {
-    HelloWorld
-  }
+    Navbar,
+    'batch-data-container': BatchDataContainer,
+    'graph-container': GraphContainer
+  },
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  body, html {
+    height: 100%;
+    width: 100%;
+  }
+
+  #app {
+    height: 100%;
+  }
+
+  #app-container {
+    height: 100%;
+  }
 </style>
