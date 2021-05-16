@@ -6,7 +6,6 @@
     <p>Loss: {{batchData.loss}}</p>
     <p>Running Accuracy: {{batchData.runningAccuracy}}</p>
     <p>Running Loss: {{batchData.runningLoss}}</p>
-    <batch-data-extended />
   </div>
 </template>
 
@@ -31,7 +30,11 @@ export default {
   },
   methods: {
     showModal () {
-
+      this.$modal.show(BatchDataExtended, {}, {
+        width: '85%',
+        height: 'auto',
+        scrollable: true
+      })
     }
   },
   components: {
@@ -40,7 +43,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style >
 #data-container {
   width: 95%;
   display: flex;
