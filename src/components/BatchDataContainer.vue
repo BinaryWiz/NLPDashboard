@@ -36,9 +36,15 @@ export default {
   display: flex;
   flex-flow: column;
   align-items: center;
-  border: 2px solid blue;
-  height: 55%;
+  height: 54.7%;
   overflow-y: auto;
+  border: 1px solid rgba(222,222,222,0.3);
+  margin-top: 0.3%;
+  margin-bottom: 0.3%;
+  border-radius: 15px;
+  -webkit-box-shadow: 10px 10px 8px -10px rgba(222,222,222,1);
+  -moz-box-shadow: 10px 10px 8px -10px rgba(222,222,222,1);
+  box-shadow: 10px 10px 8px -10px rgba(222,222,222,1);
 }
 
 #batch-data-container::-webkit-scrollbar-track {
