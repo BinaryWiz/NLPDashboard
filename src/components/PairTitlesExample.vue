@@ -27,7 +27,7 @@ export default {
     return {
       title1: 'ASUS_VivoBook 15.6" FHD Touchscreen Laptop, 1080p NanoEdge, Inetl Core i5-1035G1 Quad-Core, 12GB RAM, 512GB SSD+1TB HDD, USB-C, FP Reader, Webcam, KeyPad, Mytrix Ethernet Hub, Win 10',
       title2: 'ASUS VivoBook 15 F515 Thin and Light Laptop, 15.6” FHD Display, Intel Core i3-1005G1 Processor, 4GB DDR4 RAM, 128GB PCIe SSD, Fingerprint Reader, Windows 10 Home in S Mode, Slate Grey, F515JA-AH31',
-      label: 0,
+      label: 1,
       modelPrediction: 0,
       negativePercentage: 0.75,
       positivePercentage: 0.25
