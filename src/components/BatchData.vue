@@ -15,16 +15,9 @@ import 'typeface-muli'
 import BatchDataExtended from './BatchDataExtended'
 
 export default {
+  props: ['batchData'],
   data () {
     return {
-      batchData: {
-        epoch: 1,
-        batch: 1034,
-        accuracy: 0.7500,
-        loss: 0.6875,
-        runningAccuracy: 0.7875,
-        runningLoss: 0.7255,
-      },
       hover: false
     }
   },

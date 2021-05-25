@@ -1,25 +1,7 @@
 <template>
   <div id="batch-data-container">
     <p>Training Batch Data - Epoch 1</p>
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
-    <batch-data />
+    <batch-data v-for="batch in batchData" :key="batch" :batchData="batch"/>
   </div>
 </template>
 
@@ -28,6 +10,12 @@ import BatchData from './BatchData.vue'
 export default {
   components: {
     'batch-data': BatchData,
+  },
+
+  computed: {
+    batchData () {
+      return this.$store.state.batchData
+    }
   }
 }
 </script>
