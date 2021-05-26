@@ -14,19 +14,14 @@ export default {
   },
   data () {
     return {
-      dataCollection: null,
       chartOptions: {
         maintainAspectRatio: false
       }
     }
   },
-  created () {
-    this.fillData()
-  },
-  methods: {
-    fillData () {
-      console.log(this.data)
-      this.dataCollection = {
+  computed: {
+    dataCollection () {
+      return {
         labels: this.labels,
         datasets: [
           {
@@ -36,13 +31,6 @@ export default {
           }
         ]
       }
-    },
-    getRanList (size) {
-      let ranArr = []
-      for (var i = 0; i < size; i++) {
-        ranArr.push(i * Math.floor(i * Math.random()))
-      }
-      return ranArr
     }
   }
 }

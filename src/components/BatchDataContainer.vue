@@ -1,7 +1,7 @@
 <template>
   <div id="batch-data-container">
     <p>Training Batch Data - Epoch 1</p>
-    <batch-data v-for="batch in batchData" :key="batch" :batchData="batch"/>
+    <batch-data v-for="batch in batchData" :key="batch.id" :batchData="batch"/>
   </div>
 </template>
 

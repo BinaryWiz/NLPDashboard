@@ -1,7 +1,7 @@
 <template>
   <div id="graph-container">
-    <graph :title="'Accuracy'" :labels="this.$store.getters.lastBatches" :data="this.$store.getters.accuracies" />
-    <graph :title="'Losses'" :labels="this.$store.getters.lastBatches" :data="this.$store.getters.losses" />
+    <graph :title="'Accuracy'" :labels="this.lastBatches" :data="this.accuracies" />
+    <graph :title="'Losses'" :labels="this.lastBatches" :data="this.losses" />
   </div>
 </template>
 
@@ -10,6 +10,17 @@ import Graph from './Graph'
 export default {
   components: {
     Graph
+  },
+  computed: {
+    lastBatches () {
+      return this.$store.getters.lastBatches
+    },
+    accuracies () {
+      return this.$store.getters.accuracies
+    },
+    losses () {
+      return this.$store.getters.losses
+    }
   }
 }
 </script>
