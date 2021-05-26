@@ -31,6 +31,7 @@ export default {
     }
   },
   components: {
+    // eslint-disable-next-line
     BatchDataExtended
   }
 }

@@ -1,8 +1,7 @@
 <template>
   <div id="graph-container">
-    <graph />
-    <graph />
-    <graph />
+    <graph :title="'Accuracy'" :labels="this.$store.getters.lastBatches" :data="this.$store.getters.accuracies" />
+    <graph :title="'Losses'" :labels="this.$store.getters.lastBatches" :data="this.$store.getters.losses" />
   </div>
 </template>
 

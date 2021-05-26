@@ -8,6 +8,7 @@
 import LineChart from './LineChart.js'
 
 export default {
+  props: ['title', 'data', 'labels'],
   components: {
     LineChart
   },
@@ -24,19 +25,24 @@ export default {
   },
   methods: {
     fillData () {
+      console.log(this.data)
       this.dataCollection = {
-        labels: [this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt()],
+        labels: this.labels,
         datasets: [
           {
-            label: 'Accuracy',
+            label: this.title,
             backgroundColor: '#FF1744',
-            data: [this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt()]
+            data: this.data
           }
         ]
       }
     },
-    getRandomInt () {
-      return Math.floor(Math.random() * (50 - 5 + 1)) + 5
+    getRanList (size) {
+      let ranArr = []
+      for (var i = 0; i < size; i++) {
+        ranArr.push(i * Math.floor(i * Math.random()))
+      }
+      return ranArr
     }
   }
 }
