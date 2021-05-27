@@ -22,7 +22,7 @@ const store = new Vuex.Store({
       }
       axios.get('http://localhost:3000/get_batch_data', {
         params: {
-          model_name: 'priceassist',
+          model_name: 'test',
           epoch: getEpoch,
           batch: getBatch
         }

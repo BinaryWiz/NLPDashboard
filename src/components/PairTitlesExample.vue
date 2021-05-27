@@ -1,21 +1,21 @@
 <template>
   <div class="reg-shadow" id="pair-container" @click='showModal'>
     <div id="pair-title-container" :style="{ backgroundColor: correct }">
-      <p>Title One: {{title1}}</p>
-      <p>Title Two: {{title2}}</p>
+      <p>Title One: {{example.title1}}</p>
+      <p>Title Two: {{example.title2}}</p>
     </div>
     <div id="pair-stats-container">
       <div id="positive">
-        <p>Positive %: {{positivePercentage}}</p>
+        <p>Positive %: {{example.positivePercentage}}</p>
       </div>
       <div id="negative">
-        <p>Negative %: {{negativePercentage}}</p>
+        <p>Negative %: {{example.negativePercentage}}</p>
       </div>
       <div id="prediction">
-        <p>Prediction: {{modelPrediction}}</p>
+        <p>Prediction: {{example.modelPrediction}}</p>
       </div>
       <div id="label">
-        <p>Label: {{label}}</p>
+        <p>Label: {{example.label}}</p>
       </div>
     </div>
   </div>
@@ -23,20 +23,10 @@
 
 <script>
 export default {
-  data () {
-    return {
-      title1: 'ASUS_VivoBook 15.6" FHD Touchscreen Laptop, 1080p NanoEdge, Inetl Core i5-1035G1 Quad-Core, 12GB RAM, 512GB SSD+1TB HDD, USB-C, FP Reader, Webcam, KeyPad, Mytrix Ethernet Hub, Win 10',
-      title2: 'ASUS VivoBook 15 F515 Thin and Light Laptop, 15.6” FHD Display, Intel Core i3-1005G1 Processor, 4GB DDR4 RAM, 128GB PCIe SSD, Fingerprint Reader, Windows 10 Home in S Mode, Slate Grey, F515JA-AH31',
-      label: 1,
-      modelPrediction: 0,
-      negativePercentage: 0.75,
-      positivePercentage: 0.25
-    }
-  },
-
+  props: ['example'],
   computed: {
     correct () {
-      if (this.label == this.modelPrediction) {
+      if (this.example.label == this.example.modelPrediction) {
         return 'rgba(124, 255, 203, 0.5)'
       } else {
         return 'rgba(255, 0, 40, 0.35)'

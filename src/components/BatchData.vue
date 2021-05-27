@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import 'typeface-quicksand'
 import 'typeface-muli'
 import BatchDataExtended from './BatchDataExtended'
@@ -23,10 +24,21 @@ export default {
   },
   methods: {
     showModal () {
-      this.$modal.show(BatchDataExtended, {}, {
-        width: '85%',
-        height: 'auto',
-        scrollable: true
+      axios.get('http://localhost:3000/get_examples_data', {
+        params: {
+          model_name: 'test',
+          epoch: this.batchData.epoch,
+          batch: this.batchData.batch
+        }
+      }).then(response => {
+        let examples = response.data.data
+        this.$modal.show(BatchDataExtended, {
+          'examples': examples
+        }, {
+          width: '85%',
+          height: 'auto',
+          scrollable: true
+        })
       })
     }
   },
