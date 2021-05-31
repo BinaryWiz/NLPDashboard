@@ -29,18 +29,10 @@ const store = new Vuex.Store({
       }).then(response => {
         let newBatches = response.data.data
         newBatches.forEach(batch => {
-          let batchDict = {
-            'id': batch[0] + '-' + batch[1],
-            'epoch': batch[0],
-            'batch': batch[1],
-            'accuracy': batch[2],
-            'loss': batch[3],
-            'runningAccuracy': batch[4],
-            'runningLoss': batch[5]
-          }
-          state.allAccuracies.push(batchDict.accuracy)
-          state.allLosses.push(batchDict.loss)
-          state.batchData.push(batchDict)
+          batch.id = batch.epoch + '-' + batch.batch
+          state.allAccuracies.push(batch.accuracy)
+          state.allLosses.push(batch.loss)
+          state.batchData.push(batch)
         })
       })
     }

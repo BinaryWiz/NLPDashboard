@@ -1,7 +1,7 @@
 <template>
   <div id='bde-container'>
     <h2>Training Epoch: 1 Batch: 1034</h2>
-    <pair-titles-example v-for="example in exampleObjects" :key="example.title1" :example="example" />
+    <pair-titles-example v-for="example in examples" :key="example.title1" :example="example" />
   </div>
 </template>
 
