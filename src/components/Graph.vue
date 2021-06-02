@@ -25,9 +25,12 @@ export default {
         labels: this.labels,
         datasets: [
           {
+            data: this.data,
             label: this.title,
-            backgroundColor: '#FF1744',
-            data: this.data
+            tension: 0,
+            backgroundColor: 'rgba(255, 23, 68, 0.35)',
+            borderColor: 'rgba(255, 23, 68)',
+            borderWidth: 1
           }
         ]
       }

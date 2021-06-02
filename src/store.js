@@ -4,12 +4,26 @@ import axios from 'axios'
 Vue.use(Vuex)
 export { store }
 
+function truncateData(arr) {
+  if (arr.length > 0) {
+    if (arr.length > 1000) {
+      return arr.splice(arr.length - 1000)
+    } else {
+      return arr
+    }
+  } else {
+    return null
+  }
+}
+
 const store = new Vuex.Store({
   state: {
     batchData: [
     ],
     allAccuracies: [],
-    allLosses: []
+    allLosses: [],
+    allRunningAccuracies: [],
+    allRunningLosses: []
   },
 
   mutations: {
@@ -32,6 +46,8 @@ const store = new Vuex.Store({
           batch.id = batch.epoch + '-' + batch.batch
           state.allAccuracies.push(batch.accuracy)
           state.allLosses.push(batch.loss)
+          state.allRunningAccuracies.push(batch.runningAccuracy)
+          state.allRunningLosses.push(batch.runningLoss)
           state.batchData.push(batch)
         })
       })
@@ -40,26 +56,16 @@ const store = new Vuex.Store({
 
   getters: {
     accuracies: state => {
-      if (state.allAccuracies.length > 0) {
-        if (state.allAccuracies.length > 1000) {
-          return state.allAccuracies.splice(state.allAccuracies.length - 1000)
-        } else {
-          return state.allAccuracies
-        }
-      } else {
-        return null
-      }
+      return truncateData(state.allAccuracies)
     },
     losses: state => {
-      if (state.allLosses.length > 0) {
-        if (state.allLosses.length > 1000) {
-          return state.allLosses.splice(state.allLosses.length - 1000)
-        } else {
-          return state.allLosses
-        }
-      } else {
-        return null
-      }
+      return truncateData(state.allLosses)
+    },
+    runningAccuracies: state => {
+      return truncateData(state.allRunningAccuracies)
+    },
+    runningLosses: state => {
+      return truncateData(state.allRunningLosses)
     },
     lastBatches: state => {
       if (state.batchData.length > 0) {

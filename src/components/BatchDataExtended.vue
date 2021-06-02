@@ -1,6 +1,6 @@
 <template>
   <div id='bde-container'>
-    <h2>Training Epoch: 1 Batch: 1034</h2>
+    <h2>Training Epoch: {{ examples[0].epoch }} Batch: {{ examples[0].batch }}</h2>
     <pair-titles-example v-for="example in examples" :key="example.title1" :example="example" />
   </div>
 </template>
@@ -12,24 +12,6 @@ export default {
   data () {
     return {
 
-    }
-  },
-  computed: {
-    exampleObjects () {
-      let objs = []
-      this.examples.forEach((example) => {
-        objs.push({
-          epoch: example[0],
-          batch: example[1],
-          title1: example[2],
-          title2: example[3],
-          positivePercentage: example[4],
-          negativePercentage: example[5],
-          modelPrediction: example[6],
-          label: example[7]
-        })
-      })
-      return objs
     }
   },
   components: {
