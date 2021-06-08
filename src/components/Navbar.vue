@@ -16,27 +16,26 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
+        <ul class="navbar-nav">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle active" 
-              href="#" 
+            <a class="nav-link dropdown-toggle active"
+              href="#"
               id="navbarDropdown"
-              role="button" 
+              role="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              {{modelName}}
+              {{ modelName }}
             </a>
-            
             <ul class="dropdown-menu active" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#" v-for="name in modelOptions" :key="name">{{name}}</a></li>
+              <li><a class="dropdown-item" href="#" v-for="name in modelOptions" :key="name" @click="changeModel(name)">{{name}}</a></li>
             </ul>
           </li>
-
           <a class="nav-link active" href="#">Training</a>
           <a class="nav-link" href="#">Validation</a>
-        </div>
+        </ul>
       </div>
     </div>
   </nav>
@@ -44,9 +43,17 @@
 
 <script>
 export default {
-  props: ['modelName', 'modelOptions'],
-  data() {
-    return {
+  methods: {
+    changeModel (newModel) {
+      this.$store.commit('changeModel', newModel)
+    }
+  },
+  computed: {
+    modelName () {
+      return this.$store.state.currentModel
+    },
+    modelOptions () {
+      return this.$store.state.availableModels
     }
   }
 }

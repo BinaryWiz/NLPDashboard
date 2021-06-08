@@ -1,6 +1,6 @@
 <template>
   <div id="app-container">
-    <navbar :modelName="currentModelName" :modelOptions="modelOptions"> </navbar>
+    <navbar> </navbar>
     <batch-data-container />
     <graph-container />
   </div>
@@ -10,13 +10,8 @@
 import Navbar from './components/Navbar'
 import BatchDataContainer from './components/BatchDataContainer'
 import GraphContainer from './components/GraphContainer'
+
 export default {
-  data () {
-    return {
-      currentModelName: 'TransformerCharacterBERT',
-      modelOptions: ['TransformerCharacterBERT', 'CharacterBERT', 'ScaledCharacterBERT']
-    }
-  },
   components: {
     Navbar,
     'batch-data-container': BatchDataContainer,

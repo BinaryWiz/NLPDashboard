@@ -1,5 +1,5 @@
 <template>
-  <div class="reg-shadow" id="data-container" @click='showModal'>
+  <div class="reg-shadow" id="data-container" @click='showModal()'>
     <p>Training Epoch: {{batchData.epoch}}</p>
     <p>Batch: {{batchData.batch}}</p>
     <p>Accuracy: {{batchData.accuracy}}</p>
@@ -26,7 +26,7 @@ export default {
     showModal () {
       axios.get('http://localhost:3000/get_examples_data', {
         params: {
-          model_name: 'test',
+          model_name: this.currentModel,
           epoch: this.batchData.epoch,
           batch: this.batchData.batch
         }
@@ -40,6 +40,11 @@ export default {
           scrollable: true
         })
       })
+    }
+  },
+  computed: {
+    currentModel () {
+      return this.$store.state.currentModel
     }
   },
   components: {
