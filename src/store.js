@@ -20,8 +20,10 @@ const store = new Vuex.Store({
   state: {
     currentModel: '',
     currentTable: '',
+    currentEpoch: null,
     availableTables: [],
     availableModels: [],
+    availableEpochs: [],
     batchData: [],
     allAccuracies: [],
     allLosses: [],
@@ -52,6 +54,10 @@ const store = new Vuex.Store({
           state.allLosses.push(batch.loss)
           state.allRunningAccuracies.push(batch.runningAccuracy)
           state.allRunningLosses.push(batch.runningLoss)
+          if (!state.availableEpochs.includes(batch.epoch)) {
+            state.availableEpochs.push(batch.epoch)
+          }
+          state.currentEpoch = state.availableEpochs[0]
           state.batchData.push(batch)
         })
       })
@@ -68,6 +74,8 @@ const store = new Vuex.Store({
       state.allLosses = []
       state.allRunningAccuracies = []
       state.allRunningLosses = []
+      state.currentEpoch = null
+      state.availableEpochs = []
       state.currentModel = modelName
       axios.get('http://localhost:3000/get_table_names', {
         params: {
@@ -85,7 +93,9 @@ const store = new Vuex.Store({
       state.allRunningAccuracies = []
       state.allRunningLosses = []
       state.currentTable = table
-      console.log(state.currentTable)
+    },
+    changeEpoch (state, epoch) {
+      state.currentEpoch = epoch
     }
   },
 
@@ -116,6 +126,72 @@ const store = new Vuex.Store({
       } else {
         return null
       }
+    },
+    epochBatches: state => {
+      let epochBatches = []
+      state.batchData.forEach(batch => {
+        if (batch.epoch == state.currentEpoch) {
+          epochBatches.push(batch)
+        }
+      })
+      return truncateData(epochBatches)
+    },
+    epochAccuracies: (state, getters) => {
+      let accuracies = []
+      if (getters.epochBatches != null) {
+        getters.epochBatches.forEach(batch => {
+          accuracies.push(batch.accuracy)
+        })
+      }
+      return truncateData(accuracies)
+
+    },
+    epochLosses: (state, getters) => {
+      let losses = []
+      if (getters.epochBatches != null) {
+        getters.epochBatches.forEach(batch => {
+          losses.push(batch.loss)
+        })
+      }
+      return truncateData(losses)
+    },
+    epochRunningAccuracies: (state, getters) => {
+      let runningAccuracies = []
+      if (getters.epochBatches != null) {
+        getters.epochBatches.forEach(batch => {
+          runningAccuracies.push(batch.runningAccuracy)
+        })
+      }
+      return truncateData(runningAccuracies)
+    },
+    epochRunningLosses: (state, getters) => {
+      let runningLosses = []
+      if (getters.epochBatches != null) {
+        getters.epochBatches.forEach(batch => {
+          runningLosses.push(batch.runningLoss)
+        })
+      }
+      return truncateData(runningLosses)
+    },
+    epochLastBatches: (state, getters) => {
+      let epochBatches = getters.epochBatches
+      if (epochBatches != null) {
+        if (epochBatches.length > 0) {
+          let lastBatches = []
+          let start = 0
+          if (epochBatches.length > 1000) {
+            start = epochBatches.length - 1000
+          }
+          for (let i = start; i < epochBatches.length; i++) {
+            lastBatches.push(epochBatches[i].batch)
+          }
+          return lastBatches
+        } else {
+          return null
+        }
+      } else {
+        return null
+      }
     }
   },
 
@@ -123,7 +199,7 @@ const store = new Vuex.Store({
     updateBatchData ({ commit }) {
       setInterval(() => {
         commit('getNewBatches')
-      }, 2000)
+      }, 1500)
     },
     updateAvailableModels ({ commit }) {
       commit('getAvailableModels')

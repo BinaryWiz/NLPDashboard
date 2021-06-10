@@ -14,20 +14,20 @@ export default {
     Graph
   },
   computed: {
-    lastBatches () {
-      return this.$store.getters.lastBatches
-    },
     accuracies () {
-      return this.$store.getters.accuracies
+      return this.$store.getters.epochAccuracies
     },
     losses () {
-      return this.$store.getters.losses
+      return this.$store.getters.epochLosses
     },
     runningAccuracies () {
-      return this.$store.getters.runningAccuracies
+      return this.$store.getters.epochRunningAccuracies
     },
     runningLosses () {
-      return this.$store.getters.runningLosses
+      return this.$store.getters.epochRunningLosses
+    },
+    lastBatches () {
+      return this.$store.getters.epochLastBatches
     }
   }
 }

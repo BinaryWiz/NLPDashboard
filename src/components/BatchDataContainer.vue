@@ -1,6 +1,17 @@
 <template>
   <div id="batch-data-container">
-    <p>Batch Data</p>
+    <div id="batch-data-heading">
+      <p>Batch Data</p>
+      <div class="btn-group">
+        <button type="button" class="btn btn-outline-dark">Epoch {{ currentEpoch }}</button>
+        <button type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+          <span class="visually-hidden">Toggle Dropdown</span>
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#" v-for="epoch in availableEpochs" :key="epoch" @click="changeEpoch(epoch)">Epoch {{ epoch }}</a></li>
+        </ul>
+      </div>
+    </div>
     <batch-data v-for="batch in batchData" :key="batch.id" :batchData="batch"/>
   </div>
 </template>
@@ -11,10 +22,20 @@ export default {
   components: {
     'batch-data': BatchData,
   },
-
+  methods: {
+    changeEpoch(epoch) {
+      this.$store.commit('changeEpoch', epoch)
+    }
+  },
   computed: {
     batchData () {
-      return this.$store.state.batchData
+      return this.$store.getters.epochBatches
+    },
+    currentEpoch () {
+      return this.$store.state.currentEpoch
+    },
+    availableEpochs () {
+      return this.$store.state.availableEpochs
     }
   }
 }
@@ -40,11 +61,23 @@ export default {
   box-shadow: 10px 10px 8px -10px rgba(222,222,222,1);
 }
 
-#batch-data-container > p {
+#batch-data-heading {
+  display: flex;
+  flex-flow: row;
+
+}
+
+#batch-data-heading > p {
   margin: 0;
   font-size: 24px;
   font-family: 'muli';
+  margin-right: 10px;
 }
+
+#batch-data-heading > div {
+  margin-left: 10px;
+}
+
 
 #batch-data-container::-webkit-scrollbar-track {
   border-top-right-radius: 15px;
