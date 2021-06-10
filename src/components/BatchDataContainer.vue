@@ -1,6 +1,6 @@
 <template>
   <div id="batch-data-container">
-    <p>Training Batch Data - Epoch 1</p>
+    <p>Batch Data</p>
     <batch-data v-for="batch in batchData" :key="batch.id" :batchData="batch"/>
   </div>
 </template>
@@ -23,9 +23,13 @@ export default {
 <style scoped>
 #batch-data-container {
   display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
   flex-flow: column;
   align-items: center;
-  height: 54.7%;
+  height: 59%;
+  width: 87%;
   overflow-y: auto;
   border: 1px solid rgba(222,222,222,0.3);
   margin-top: 0.3%;

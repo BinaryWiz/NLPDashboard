@@ -19,6 +19,8 @@ function truncateData(arr) {
 const store = new Vuex.Store({
   state: {
     currentModel: '',
+    currentTable: '',
+    availableTables: [],
     availableModels: [],
     batchData: [],
     allAccuracies: [],
@@ -38,6 +40,7 @@ const store = new Vuex.Store({
       axios.get('http://localhost:3000/get_batch_data', {
         params: {
           model_name: state.currentModel,
+          table: state.currentTable,
           epoch: getEpoch,
           batch: getBatch
         }
@@ -56,7 +59,7 @@ const store = new Vuex.Store({
     getAvailableModels (state) {
       axios.get('http://localhost:3000/get_avail_models', {}).then(response => {
         state.availableModels = response.data.data
-        state.currentModel = response.data.data[0]
+        this.commit('changeModel', response.data.data[0])
       })
     },
     changeModel (state, modelName) {
@@ -66,6 +69,23 @@ const store = new Vuex.Store({
       state.allRunningAccuracies = []
       state.allRunningLosses = []
       state.currentModel = modelName
+      axios.get('http://localhost:3000/get_table_names', {
+        params: {
+          model_name: modelName
+        }
+      }).then(response => {
+        state.availableTables = response.data.data
+        state.currentTable = response.data.data[0]
+      })
+    },
+    changeTable (state, table) {
+      state.batchData = []
+      state.allAccuracies = []
+      state.allLosses = []
+      state.allRunningAccuracies = []
+      state.allRunningLosses = []
+      state.currentTable = table
+      console.log(state.currentTable)
     }
   },
 

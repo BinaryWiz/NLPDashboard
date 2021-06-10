@@ -28,8 +28,8 @@ export default {
             data: this.data,
             label: this.title,
             tension: 0,
-            backgroundColor: 'rgba(255, 23, 68, 0.35)',
-            borderColor: 'rgba(255, 23, 68)',
+            backgroundColor: 'rgba(4, 93, 233, 0.35)',
+            borderColor: 'rgba(4, 93, 233, 1)',
             borderWidth: 1
           }
         ]

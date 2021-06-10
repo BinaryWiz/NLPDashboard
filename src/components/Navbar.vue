@@ -33,8 +33,7 @@
               <li><a class="dropdown-item" href="#" v-for="name in modelOptions" :key="name" @click="changeModel(name)">{{name}}</a></li>
             </ul>
           </li>
-          <a class="nav-link active" href="#">Training</a>
-          <a class="nav-link" href="#">Validation</a>
+          <a class="nav-link" href="#" v-for="table in availableTables" :key="table" :class="table == currentTable ? 'active' : ''" @click="changeTable(table)">{{ table }}</a>
         </ul>
       </div>
     </div>
@@ -46,6 +45,9 @@ export default {
   methods: {
     changeModel (newModel) {
       this.$store.commit('changeModel', newModel)
+    },
+    changeTable (newTable) {
+      this.$store.commit('changeTable', newTable)
     }
   },
   computed: {
@@ -54,6 +56,12 @@ export default {
     },
     modelOptions () {
       return this.$store.state.availableModels
+    },
+    currentTable () {
+      return this.$store.state.currentTable
+    },
+    availableTables () {
+      return this.$store.state.availableTables
     }
   }
 }

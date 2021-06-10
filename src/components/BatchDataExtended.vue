@@ -1,6 +1,6 @@
 <template>
   <div id='bde-container'>
-    <h2>Training Epoch: {{ examples[0].epoch }} Batch: {{ examples[0].batch }}</h2>
+    <h2>Epoch: {{ examples[0].epoch }} Batch: {{ examples[0].batch }}</h2>
     <pair-titles-example v-for="example in examples" :key="example.title1" :example="example" />
   </div>
 </template>

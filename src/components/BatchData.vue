@@ -1,6 +1,6 @@
 <template>
   <div class="reg-shadow" id="data-container" @click='showModal()'>
-    <p>Training Epoch: {{batchData.epoch}}</p>
+    <p>Epoch: {{batchData.epoch}}</p>
     <p>Batch: {{batchData.batch}}</p>
     <p>Accuracy: {{batchData.accuracy}}</p>
     <p>Loss: {{batchData.loss}}</p>
@@ -27,6 +27,7 @@ export default {
       axios.get('http://localhost:3000/get_examples_data', {
         params: {
           model_name: this.currentModel,
+          table: this.currentTable,
           epoch: this.batchData.epoch,
           batch: this.batchData.batch
         }
@@ -45,6 +46,9 @@ export default {
   computed: {
     currentModel () {
       return this.$store.state.currentModel
+    },
+    currentTable () {
+      return this.$store.state.currentTable
     }
   },
   components: {
