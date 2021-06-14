@@ -4,18 +4,6 @@ import axios from 'axios'
 Vue.use(Vuex)
 export { store }
 
-function truncateData(arr) {
-  if (arr.length > 0) {
-    if (arr.length > 1000) {
-      return arr.splice(arr.length - 1000)
-    } else {
-      return arr
-    }
-  } else {
-    return null
-  }
-}
-
 const store = new Vuex.Store({
   state: {
     currentModel: '',
@@ -24,20 +12,21 @@ const store = new Vuex.Store({
     availableTables: [],
     availableModels: [],
     availableEpochs: [],
-    batchData: [],
-    allAccuracies: [],
-    allLosses: [],
-    allRunningAccuracies: [],
-    allRunningLosses: []
+    batchData: {},
+    allAccuracies: {},
+    allLosses: {},
+    allRunningAccuracies: {},
+    allRunningLosses: {}
   },
 
   mutations: {
     getNewBatches (state) {
       let getEpoch = 1
       let getBatch = 0
-      if (state.batchData.length > 0) {
-        getEpoch = state.batchData[state.batchData.length - 1].epoch
-        getBatch = state.batchData[state.batchData.length - 1].batch
+      if (!(Object.keys(state.batchData).length === 0 && state.batchData.constructor === Object)) {
+        let latestEpoch = state.batchData[state.availableEpochs[state.availableEpochs.length - 1]]
+        getEpoch = latestEpoch[latestEpoch.length - 1].epoch
+        getBatch = latestEpoch[latestEpoch.length - 1].batch
       }
       axios.get('http://localhost:3000/get_batch_data', {
         params: {
@@ -50,15 +39,33 @@ const store = new Vuex.Store({
         let newBatches = response.data.data
         newBatches.forEach(batch => {
           batch.id = batch.epoch + '-' + batch.batch
-          state.allAccuracies.push(batch.accuracy)
-          state.allLosses.push(batch.loss)
-          state.allRunningAccuracies.push(batch.runningAccuracy)
-          state.allRunningLosses.push(batch.runningLoss)
+          if (!state.batchData.hasOwnProperty(batch.epoch)) {
+            state.batchData[batch.epoch] = []
+          }
+          if (!state.batchData.hasOwnProperty(batch.epoch)) {
+            state.batchData[batch.epoch] = []
+          }
+          if (!state.allAccuracies.hasOwnProperty(batch.epoch)) {
+            state.allAccuracies[batch.epoch] = []
+          }
+          if (!state.allLosses.hasOwnProperty(batch.epoch)) {
+            state.allLosses[batch.epoch] = []
+          }
+          if (!state.allRunningAccuracies.hasOwnProperty(batch.epoch)) {
+            state.allRunningAccuracies[batch.epoch] = []
+          }
+          if (!state.allRunningLosses.hasOwnProperty(batch.epoch)) {
+            state.allRunningLosses[batch.epoch] = []
+          }
+          state.allAccuracies[batch.epoch].push(batch.accuracy)
+          state.allLosses[batch.epoch].push(batch.loss)
+          state.allRunningAccuracies[batch.epoch].push(batch.runningAccuracy)
+          state.allRunningLosses[batch.epoch].push(batch.runningLoss)
+          state.batchData[batch.epoch].push(batch)
           if (!state.availableEpochs.includes(batch.epoch)) {
             state.availableEpochs.push(batch.epoch)
+            state.currentEpoch = batch.epoch
           }
-          state.currentEpoch = state.availableEpochs[0]
-          state.batchData.push(batch)
         })
       })
     },
@@ -69,11 +76,11 @@ const store = new Vuex.Store({
       })
     },
     changeModel (state, modelName) {
-      state.batchData = []
-      state.allAccuracies = []
-      state.allLosses = []
-      state.allRunningAccuracies = []
-      state.allRunningLosses = []
+      state.batchData = {}
+      state.allAccuracies = {}
+      state.allLosses = {}
+      state.allRunningAccuracies = {}
+      state.allRunningLosses = {}
       state.currentEpoch = null
       state.availableEpochs = []
       state.currentModel = modelName
@@ -87,12 +94,14 @@ const store = new Vuex.Store({
       })
     },
     changeTable (state, table) {
-      state.batchData = []
-      state.allAccuracies = []
-      state.allLosses = []
-      state.allRunningAccuracies = []
-      state.allRunningLosses = []
+      state.batchData = {}
+      state.allAccuracies = {}
+      state.allLosses = {}
+      state.allRunningAccuracies = {}
+      state.allRunningLosses = {}
+      state.availableEpochs = []
       state.currentTable = table
+      state.currentEpoch = null
     },
     changeEpoch (state, epoch) {
       state.currentEpoch = epoch
@@ -101,100 +110,74 @@ const store = new Vuex.Store({
 
   getters: {
     accuracies: state => {
-      return truncateData(state.allAccuracies)
+      let accuracies = []
+      state.availableEpochs.forEach(epoch => {
+        accuracies.concat(state.allAccuracies[epoch])
+      })
+      return accuracies
     },
     losses: state => {
-      return truncateData(state.allLosses)
+      let losses = []
+      state.availableEpochs.forEach(epoch => {
+        losses.concat(state.allLosses[epoch])
+      })
+      return losses
     },
     runningAccuracies: state => {
-      return truncateData(state.allRunningAccuracies)
+      let runningAccuracies = []
+      state.availableEpochs.forEach(epoch => {
+        runningAccuracies.concat(state.allRunningAccuracies[epoch])
+      })
+      return runningAccuracies
     },
     runningLosses: state => {
-      return truncateData(state.allRunningLosses)
+      let runningLosses = []
+      state.availableEpochs.forEach(epoch => {
+        runningLosses.concat(state.allRunningLosses[epoch])
+      })
+      return runningLosses
     },
     lastBatches: state => {
-      if (state.batchData.length > 0) {
-        let lastBatches = []
-        let start = 0
-        if (state.batchData.length > 1000) {
-          start = state.batchData.length - 1000
-        }
-        for (let i = start; i < state.batchData.length; i++) {
-          lastBatches.push(state.batchData[i].batch)
-        }
-        return lastBatches
-      } else {
-        return null
-      }
+      let batches = []
+      state.availableEpochs.forEach(epoch => {
+        batches.concat(state.batchData[epoch])
+      })
+      return batches
     },
     epochBatches: state => {
-      let epochBatches = []
-      state.batchData.forEach(batch => {
-        if (batch.epoch == state.currentEpoch) {
-          epochBatches.push(batch)
-        }
-      })
-      return truncateData(epochBatches)
+      return state.batchData[state.currentEpoch]
     },
-    epochAccuracies: (state, getters) => {
-      let accuracies = []
-      if (getters.epochBatches != null) {
-        getters.epochBatches.forEach(batch => {
-          accuracies.push(batch.accuracy)
-        })
-      }
-      return truncateData(accuracies)
+    epochAccuracies: (state) => {
+      return state.allAccuracies[state.currentEpoch]
 
     },
-    epochLosses: (state, getters) => {
-      let losses = []
-      if (getters.epochBatches != null) {
-        getters.epochBatches.forEach(batch => {
-          losses.push(batch.loss)
-        })
-      }
-      return truncateData(losses)
+    epochLosses: (state) => {
+      return state.allLosses[state.currentEpoch]
     },
-    epochRunningAccuracies: (state, getters) => {
-      let runningAccuracies = []
-      if (getters.epochBatches != null) {
-        getters.epochBatches.forEach(batch => {
-          runningAccuracies.push(batch.runningAccuracy)
-        })
-      }
-      return truncateData(runningAccuracies)
+    epochRunningAccuracies: (state) => {
+      return state.allRunningAccuracies[state.currentEpoch]
     },
-    epochRunningLosses: (state, getters) => {
-      let runningLosses = []
-      if (getters.epochBatches != null) {
-        getters.epochBatches.forEach(batch => {
-          runningLosses.push(batch.runningLoss)
-        })
-      }
-      return truncateData(runningLosses)
+    epochRunningLosses: (state) => {
+      return state.allRunningLosses[state.currentEpoch]
     },
-    epochLastBatches: (state, getters) => {
-      let epochBatches = getters.epochBatches
-      if (epochBatches != null) {
-        if (epochBatches.length > 0) {
+    epochLastBatches: (state) => {
+      if (state.batchData[state.currentEpoch] != null) {
+        if (state.batchData[state.currentEpoch].length > 0) {
           let lastBatches = []
           let start = 0
-          if (epochBatches.length > 1000) {
-            start = epochBatches.length - 1000
+          if (state.batchData[state.currentEpoch].length > 1000) {
+            start = state.batchData[state.currentEpoch].length - 1000
           }
-          for (let i = start; i < epochBatches.length; i++) {
-            lastBatches.push(epochBatches[i].batch)
+          for (let i = start; i < state.batchData[state.currentEpoch].length; i++) {
+            lastBatches.push(state.batchData[state.currentEpoch][i].batch)
           }
           return lastBatches
         } else {
           return null
         }
-      } else {
-        return null
       }
     }
   },
-
   actions: {
     updateBatchData ({ commit }) {
       setInterval(() => {

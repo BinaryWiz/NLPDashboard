@@ -35,6 +35,9 @@
             "warn",
             "never"
         ],
+        "no-prototype-builtins": [
+            0
+        ],
         "vue/no-unused-components": [
             "warn"
         ]
