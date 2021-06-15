@@ -1,9 +1,9 @@
 <template>
   <div id="graph-container">
-    <graph :title="'Running Accuracy'" :labels="this.lastBatches" :data="this.runningAccuracies" />
-    <graph :title="'Running Losses'" :labels="this.lastBatches" :data="this.runningLosses" />
-    <graph :title="'Accuracy'" :labels="this.lastBatches" :data="this.accuracies" />
-    <graph :title="'Losses'" :labels="this.lastBatches" :data="this.losses" />
+    <graph :title="'Running Accuracy'" :labels="this.lastBatches" :data="this.runningAccuracies" :yLabel="'Accuracy'" :xLabel="'Batch #'" />
+    <graph :title="'Running Losses'" :labels="this.lastBatches" :data="this.runningLosses" :yLabel="'Loss'" :xLabel="'Batch #'" />
+    <graph :title="'Accuracy'" :labels="this.lastBatches" :data="this.accuracies" :yLabel="'Accuracy'" :xLabel="'Batch #'" />
+    <graph :title="'Losses'" :labels="this.lastBatches" :data="this.losses" :yLabel="'Loss'" :xLabel="'Batch #'" />
   </div>
 </template>
 

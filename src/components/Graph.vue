@@ -8,14 +8,28 @@
 import LineChart from './LineChart.js'
 
 export default {
-  props: ['title', 'data', 'labels'],
+  props: ['title', 'data', 'labels', 'yLabel', 'xLabel'],
   components: {
     LineChart
   },
   data () {
     return {
       chartOptions: {
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.yLabel
+            }
+          }],
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.xLabel
+            }
+          }]
+        }
       }
     }
   },
