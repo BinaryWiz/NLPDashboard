@@ -16,11 +16,17 @@ const store = new Vuex.Store({
     allAccuracies: {},
     allLosses: {},
     allRunningAccuracies: {},
-    allRunningLosses: {}
+    allRunningLosses: {},
+    getBatchesRunning: false
   },
 
   mutations: {
     getNewBatches (state) {
+      if (state.getBatchesRunning) {
+        return
+      } else {
+        state.getBatchesRunning = true
+      }
       let getEpoch = 1
       let getBatch = 0
       if (!(Object.keys(state.batchData).length === 0 && state.batchData.constructor === Object)) {
@@ -35,39 +41,51 @@ const store = new Vuex.Store({
           epoch: getEpoch,
           batch: getBatch
         }
-      }).then(response => {
-        let newBatches = response.data.data
-        newBatches.forEach(batch => {
-          batch.id = batch.epoch + '-' + batch.batch
-          if (!state.batchData.hasOwnProperty(batch.epoch)) {
-            state.batchData[batch.epoch] = []
+      })
+        .then(response => {
+          try {
+            let newBatches = response.data.data
+            newBatches.forEach(batch => {
+              batch.id = batch.epoch + '-' + batch.batch
+              if (!state.batchData.hasOwnProperty(batch.epoch)) {
+                Vue.set(state.batchData, batch.epoch, [])
+              }
+              if (!state.allAccuracies.hasOwnProperty(batch.epoch)) {
+                Vue.set(state.allAccuracies, batch.epoch, [])
+              }
+              if (!state.allLosses.hasOwnProperty(batch.epoch)) {
+                Vue.set(state.allLosses, batch.epoch, [])
+              }
+              if (!state.allRunningAccuracies.hasOwnProperty(batch.epoch)) {
+                Vue.set(state.allRunningAccuracies, batch.epoch, [])
+              }
+              if (!state.allRunningLosses.hasOwnProperty(batch.epoch)) {
+                Vue.set(state.allRunningLosses, batch.epoch, [])
+              }
+              state.allAccuracies[batch.epoch].push(batch.accuracy)
+              state.allLosses[batch.epoch].push(batch.loss)
+              state.allRunningAccuracies[batch.epoch].push(batch.runningAccuracy)
+              state.allRunningLosses[batch.epoch].push(batch.runningLoss)
+              state.batchData[batch.epoch].push(batch)
+              if (!state.availableEpochs.includes(batch.epoch)) {
+                state.availableEpochs.push(batch.epoch)
+                state.currentEpoch = batch.epoch
+              }
+            })
           }
-          if (!state.batchData.hasOwnProperty(batch.epoch)) {
-            state.batchData[batch.epoch] = []
+          catch (error) {
+            console.log('Error within response while getting new batches: ')
+            console.log(error)
           }
-          if (!state.allAccuracies.hasOwnProperty(batch.epoch)) {
-            state.allAccuracies[batch.epoch] = []
-          }
-          if (!state.allLosses.hasOwnProperty(batch.epoch)) {
-            state.allLosses[batch.epoch] = []
-          }
-          if (!state.allRunningAccuracies.hasOwnProperty(batch.epoch)) {
-            state.allRunningAccuracies[batch.epoch] = []
-          }
-          if (!state.allRunningLosses.hasOwnProperty(batch.epoch)) {
-            state.allRunningLosses[batch.epoch] = []
-          }
-          state.allAccuracies[batch.epoch].push(batch.accuracy)
-          state.allLosses[batch.epoch].push(batch.loss)
-          state.allRunningAccuracies[batch.epoch].push(batch.runningAccuracy)
-          state.allRunningLosses[batch.epoch].push(batch.runningLoss)
-          state.batchData[batch.epoch].push(batch)
-          if (!state.availableEpochs.includes(batch.epoch)) {
-            state.availableEpochs.push(batch.epoch)
-            state.currentEpoch = batch.epoch
+          finally {
+            state.getBatchesRunning = false
           }
         })
-      })
+        .catch(error => {
+          console.log('Network error getting new batches: ')
+          console.log(error)
+          state.getBatchesRunning = false
+        })
     },
     getAvailableModels (state) {
       axios.get('http://localhost:3000/get_avail_models', {}).then(response => {
