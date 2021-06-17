@@ -13,6 +13,7 @@ const store = new Vuex.Store({
     availableModels: [],
     availableEpochs: [],
     batchData: {},
+    allBatchNumbers: {},
     allAccuracies: {},
     allLosses: {},
     allRunningAccuracies: {},
@@ -22,11 +23,13 @@ const store = new Vuex.Store({
 
   mutations: {
     getNewBatches (state) {
+      // Make sure we are not in the middle of a request before making a new one
       if (state.getBatchesRunning) {
         return
       } else {
         state.getBatchesRunning = true
       }
+      // If this is not the first request we are making, get the latest batch epoch and batch to make the request
       let getEpoch = 1
       let getBatch = 0
       if (!(Object.keys(state.batchData).length === 0 && state.batchData.constructor === Object)) {
@@ -34,6 +37,7 @@ const store = new Vuex.Store({
         getEpoch = latestEpoch[latestEpoch.length - 1].epoch
         getBatch = latestEpoch[latestEpoch.length - 1].batch
       }
+      // Make requst to server
       axios.get('http://localhost:3000/get_batch_data', {
         params: {
           model_name: state.currentModel,
@@ -46,27 +50,27 @@ const store = new Vuex.Store({
           try {
             let newBatches = response.data.data
             newBatches.forEach(batch => {
+              // The batch id is for v-for's key
               batch.id = batch.epoch + '-' + batch.batch
-              if (!state.batchData.hasOwnProperty(batch.epoch)) {
+              // If this is the first batch in an epoch, make the array
+              // Vue.set because state.batchData is an object
+              if (!state.availableEpochs.includes(batch.epoch)) {
                 Vue.set(state.batchData, batch.epoch, [])
-              }
-              if (!state.allAccuracies.hasOwnProperty(batch.epoch)) {
+                Vue.set(state.allBatchNumbers, batch.epoch, [])
                 Vue.set(state.allAccuracies, batch.epoch, [])
-              }
-              if (!state.allLosses.hasOwnProperty(batch.epoch)) {
                 Vue.set(state.allLosses, batch.epoch, [])
-              }
-              if (!state.allRunningAccuracies.hasOwnProperty(batch.epoch)) {
                 Vue.set(state.allRunningAccuracies, batch.epoch, [])
-              }
-              if (!state.allRunningLosses.hasOwnProperty(batch.epoch)) {
                 Vue.set(state.allRunningLosses, batch.epoch, [])
               }
+              // Push all the data
+              state.batchData[batch.epoch].push(batch)
+              state.allBatchNumbers[batch.epoch].push(batch.batch)
               state.allAccuracies[batch.epoch].push(batch.accuracy)
               state.allLosses[batch.epoch].push(batch.loss)
               state.allRunningAccuracies[batch.epoch].push(batch.runningAccuracy)
               state.allRunningLosses[batch.epoch].push(batch.runningLoss)
-              state.batchData[batch.epoch].push(batch)
+              // If this is a new epoch, add the epoch to state.availableEpochs
+              // and set the new currentEpoch to this epoch
               if (!state.availableEpochs.includes(batch.epoch)) {
                 state.availableEpochs.push(batch.epoch)
                 state.currentEpoch = batch.epoch
@@ -78,22 +82,26 @@ const store = new Vuex.Store({
             console.log(error)
           }
           finally {
+            // Make sure other requests will go through
             state.getBatchesRunning = false
           }
         })
         .catch(error => {
           console.log('Network error getting new batches: ')
           console.log(error)
+          // Make sure other requests will go through
           state.getBatchesRunning = false
         })
     },
     getAvailableModels (state) {
+      // Gets models saved on the server
       axios.get('http://localhost:3000/get_avail_models', {}).then(response => {
         state.availableModels = response.data.data
         this.commit('changeModel', response.data.data[0])
       })
     },
     changeModel (state, modelName) {
+      // When changing a model, reset all the data and get the tables available
       state.batchData = {}
       state.allAccuracies = {}
       state.allLosses = {}
@@ -112,6 +120,7 @@ const store = new Vuex.Store({
       })
     },
     changeTable (state, table) {
+      // Reset the data
       state.batchData = {}
       state.allAccuracies = {}
       state.allLosses = {}
@@ -122,11 +131,13 @@ const store = new Vuex.Store({
       state.currentEpoch = null
     },
     changeEpoch (state, epoch) {
+      // Simply changing the currentEpoch will update all the data
       state.currentEpoch = epoch
     }
   },
 
   getters: {
+    // All of these get data across ALL epochs
     accuracies: state => {
       let accuracies = []
       state.availableEpochs.forEach(epoch => {
@@ -155,13 +166,14 @@ const store = new Vuex.Store({
       })
       return runningLosses
     },
-    lastBatches: state => {
+    batches: state => {
       let batches = []
       state.availableEpochs.forEach(epoch => {
-        batches.concat(state.batchData[epoch])
+        batches.concat(state.allBatchNumbers[epoch])
       })
       return batches
     },
+    // All of these get data for a single epoch
     epochBatches: state => {
       return state.batchData[state.currentEpoch]
     },
@@ -179,29 +191,17 @@ const store = new Vuex.Store({
       return state.allRunningLosses[state.currentEpoch]
     },
     epochLastBatches: (state) => {
-      if (state.batchData[state.currentEpoch] != null) {
-        if (state.batchData[state.currentEpoch].length > 0) {
-          let lastBatches = []
-          let start = 0
-          if (state.batchData[state.currentEpoch].length > 1000) {
-            start = state.batchData[state.currentEpoch].length - 1000
-          }
-          for (let i = start; i < state.batchData[state.currentEpoch].length; i++) {
-            lastBatches.push(state.batchData[state.currentEpoch][i].batch)
-          }
-          return lastBatches
-        } else {
-          return null
-        }
-      }
+      return state.allBatchNumbers[state.currentEpoch]
     }
   },
   actions: {
+    // Updates the batch data every 1.5 seconds
     updateBatchData ({ commit }) {
       setInterval(() => {
         commit('getNewBatches')
       }, 1500)
     },
+    // Only called on refresh, gets all the available models on the server
     updateAvailableModels ({ commit }) {
       commit('getAvailableModels')
     }
