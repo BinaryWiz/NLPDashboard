@@ -1,11 +1,13 @@
 <template>
-  <div class="reg-shadow" id="data-container" @click='showModal()'>
-    <p>Epoch: {{batchData.epoch}}</p>
-    <p>Batch: {{batchData.batch}}</p>
-    <p>Accuracy: {{batchData.accuracy}}</p>
-    <p>Loss: {{batchData.loss}}</p>
-    <p>Running Accuracy: {{batchData.runningAccuracy}}</p>
-    <p>Running Loss: {{batchData.runningLoss}}</p>
+  <div id="container">
+    <div class="reg-shadow" id="data-container" @click='showModal()'>
+      <p class="epoch">Epoch: {{batchData.epoch}}</p>
+      <p class="batch">Batch: {{batchData.batch}}</p>
+      <p class="accuracy">Accuracy: {{batchData.accuracy}}</p>
+      <p class="loss">Loss: {{batchData.loss}}</p>
+      <p class="running-accuracy">Running Accuracy: {{batchData.runningAccuracy}}</p>
+      <p class="running-loss">Running Loss: {{batchData.runningLoss}}</p>
+    </div>
   </div>
 </template>
 
@@ -58,17 +60,24 @@ export default {
 }
 </script>
 
-<style >
+<style>
+#container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
 #data-container {
   width: 95%;
   display: flex;
+  align-items: center;
   flex-flow: row;
-  justify-content: space-evenly;
   margin-top: 2px;
   margin-bottom: 2px;
   border-radius: 9px;
   padding-top: 7px;
   padding-bottom: 7px;
+  padding-left: 1.3%;
 }
 
 #data-container:hover {
@@ -79,9 +88,32 @@ export default {
   display: flex;
   font-size: 18px;
   font-family: 'muli';
-  align-items: center;
   margin: 0;
   padding: 0;
+}
+
+.epoch {
+  flex: 2 3 1px;
+}
+
+.batch {
+  flex: 2 2 1px;
+}
+
+.accuracy {
+  flex: 2 2 0px;
+}
+
+.loss {
+  flex: 2 2 0px;
+}
+
+.running-accuracy {
+  flex: 3 1 0px;
+}
+
+.running-loss {
+  flex: 3 1 0px;
 }
 
 .reg-shadow {

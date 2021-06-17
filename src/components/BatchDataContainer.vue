@@ -13,7 +13,7 @@
           </ul>
         </div>
       </div>
-      <batch-data v-for="batch in batchData" :key="batch.id" :batchData="batch"/>
+      <batch-data class="batch" v-for="batch in batchData" :key="batch.id" :batchData="batch"/>
     </div>
     <div class="batch-data-container" id="loading-container" v-else>
         <img id="loading-img" :src="require(`../assets/load.svg`)">
@@ -58,11 +58,11 @@ export default {
 <style scoped>
 .batch-data-container {
   display: flex;
+  flex-flow: column;
+  align-items: center;
   position: absolute;
   top: 0;
   right: 0;
-  flex-flow: column;
-  align-items: center;
   height: 59%;
   width: 87%;
   overflow-y: auto;
@@ -75,10 +75,13 @@ export default {
   box-shadow: 10px 10px 8px -10px rgba(222,222,222,1);
 }
 
+.batch {
+  max-height: 9%;
+}
+
 #batch-data-heading {
   display: flex;
   flex-flow: row;
-
 }
 
 #batch-data-heading > p {
@@ -91,7 +94,6 @@ export default {
 #batch-data-heading > div {
   margin-left: 10px;
 }
-
 
 .batch-data-container::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px rgba(18, 105, 163, 0.3);
