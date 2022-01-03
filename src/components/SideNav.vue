@@ -7,8 +7,27 @@
         NLP Dashboard
       </span>
     </a>
+    
+    <ul class="list-unstyled ps-0 pb-3 mb-3 border-bottom">
+      <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed text-white" data-bs-toggle="collapse" data-bs-target="#view-collapse" aria-expanded="true">
+          View
+        </button>
+        <div class="collapse show" id="view-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+            <li>
+              <a href="#" class="link-light rounded" :class="view == 'model inference' ? 'highlight-background' : ''" @click="changeViewToModelInference()">Model Inference</a>
+            </li>
+            <li>
+              <a href="#" class="link-light rounded" :class="view == 'model info' ? 'highlight-background' : ''" @click="changeViewToModelInfo()">Model Information</a>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+
     <ul class="list-unstyled ps-0">
-      <li class="mb-1 ">
+      <li class="mb-1">
         <button class="btn btn-toggle align-items-center rounded collapsed text-white" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
           Models
         </button>
@@ -24,7 +43,9 @@
         </button>
         <div class="collapse show" id="dashboard-collapse">
           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li v-for="table in availableTables" :key="table"><a href="#" class="link-light rounded" :class="table == currentTable ? 'highlight-background' : ''" @click="changeTable(table)">{{ table }}</a></li>
+            <li v-for="table in availableTables" :key="table">
+              <a href="#" class="link-light rounded" :class="table == currentTable ? 'highlight-background' : ''" @click="changeTable(table)">{{ table }}</a>
+            </li>
           </ul>
         </div>
       </li>
@@ -40,9 +61,18 @@ export default {
     },
     changeTable (newTable) {
       this.$store.commit('changeTable', newTable)
+    },
+    changeViewToModelInference() {
+      this.$store.commit('changeView', 'model inference')
+    },
+    changeViewToModelInfo() {
+      this.$store.commit('changeView', 'model info')
     }
   },
   computed: {
+    view () {
+      return this.$store.state.view
+    },
     modelName () {
       return this.$store.state.currentModel
     },

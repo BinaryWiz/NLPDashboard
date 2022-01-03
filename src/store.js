@@ -18,7 +18,10 @@ const store = new Vuex.Store({
     allLosses: {},
     allRunningAccuracies: {},
     allRunningLosses: {},
-    getBatchesRunning: false
+    getBatchesRunning: false,
+
+    // view can either be "model inference" or "model info"
+    view: 'model inference'
   },
 
   mutations: {
@@ -133,6 +136,9 @@ const store = new Vuex.Store({
     changeEpoch (state, epoch) {
       // Simply changing the currentEpoch will update all the data
       state.currentEpoch = epoch
+    },
+    changeView (state, newView) {
+      state.view = newView
     }
   },
 

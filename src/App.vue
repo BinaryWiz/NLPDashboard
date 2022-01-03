@@ -7,14 +7,12 @@
 </template>
 
 <script>
-import Navbar from './components/Navbar'
 import BatchDataContainer from './components/BatchDataContainer'
 import GraphContainer from './components/GraphContainer'
 import SideNav from './components/SideNav.vue'
 
 export default {
   components: {
-    Navbar,
     'batch-data-container': BatchDataContainer,
     'graph-container': GraphContainer,
     'sidenav': SideNav
