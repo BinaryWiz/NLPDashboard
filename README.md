@@ -2,7 +2,7 @@
 
 This project was made in order to easily see training examples when training a text-based classifier. 
 
-![Dashboard](readme_imgs/dashboard_redesigned.png)
+![Dashboard](docs/dashboard_redesigned.png)
 
 ## Features
 * Able to see the accuracy, loss, running accuracy, and running loss for each batch.
