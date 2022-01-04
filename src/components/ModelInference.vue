@@ -26,20 +26,16 @@
     </div>
 
     <div id="titles-container">
-      <pair-title-inference
-       :titleOne="'Lenovo 2021 Newest Ideapad 3 Laptop, 15.6 Full HD 1080P Non-Touch Display, AMD Ryzen 3 3250U Processor, 8GB DDR4 RAM, 128GB PCIe NVMe SSD, Webcam, Wi-Fi, HDMI, Windows 10 Home, KKE Mousepad, Grey'"
-       :titleTwo="'HP 15-inch Laptop, 11th Generation Intel Core i5-1135G7, Intel Iris Xe Graphics, 8 GB RAM, 256 GB SSD, Windows 11 Home (15-dy2024nr, Natural silver)'"
-       :matchPercentage="'72%'" />
-      <pair-title-inference
-       :titleOne="'Lenovo 2021 Newest Ideapad 3 Laptop, 15.6 Full HD 1080P Non-Touch Display, AMD Ryzen 3 3250U Processor, 8GB DDR4 RAM, 128GB PCIe NVMe SSD, Webcam, Wi-Fi, HDMI, Windows 10 Home, KKE Mousepad, Grey'"
-       :titleTwo="'HP 15-inch Laptop, 11th Generation Intel Core i5-1135G7, Intel Iris Xe Graphics, 8 GB RAM, 256 GB SSD, Windows 11 Home (15-dy2024nr, Natural silver)'"
-       :matchPercentage="'72%'" />
+      <pair-title-inference v-for="pair in titlePairs" :key="pair.titleOne + pair.titleTwo"
+       :titleOne="pair.titleOne"
+       :titleTwo="pair.titleTwo"
+       :matchPercentage="pair.percent" />
     </div>
   </div>
 </template>
 
 <script>
-// import axios from 'axios'
+import axios from 'axios'
 import PairTitleInference from './PairTitleInference.vue'
 export default {
   components: {
@@ -47,13 +43,26 @@ export default {
   },
   data () {
     return {
+      titlePairs: [],
       title1: '',
       title2: ''
     }
   },
   methods: {
     sendTitles () {
-      console.log(`Title 1: ${this.title1} Title 2: ${this.title2}`)
+      axios.post('http://localhost:5004/price-assist/api/product-matcher', {
+        title: this.title1,
+        data: [this.title2]
+      }).then(response => {
+        this.titlePairs.push({
+          titleOne: this.title1,
+          titleTwo: this.title2,
+          percent: Math.round(response.data[this.title2] * 100)
+        })
+      }).finally(() => {
+        this.title1 = ''
+        this.title2 = ''
+      })
     }
   }
 }
@@ -75,7 +84,6 @@ export default {
   overflow-y: auto;
   border: 1px solid rgba(222,222,222,0.3);
   margin-top: 0.3%;
-  border-radius: 15px;
   -webkit-box-shadow: 10px 10px 8px -10px rgba(222,222,222,1);
   -moz-box-shadow: 10px 10px 8px -10px rgba(222,222,222,1);
   box-shadow: 10px 10px 8px -10px rgba(222,222,222,1);
@@ -111,6 +119,23 @@ export default {
   margin-top: 10px;
   flex-flow: column;
   align-items: center;
+  overflow-y: auto;
+  border-radius: 15px;
+}
+
+#titles-container::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(18, 105, 163, 0.3);
+	-webkit-box-shadow: inset 0 0 6px rgba(18, 105, 163, 0.3);
+	background-color: #F5F5F5;
+}
+
+#titles-container::-webkit-scrollbar {
+	width: 11px;
+	background-color: #F5F5F5;
+}
+
+#titles-container::-webkit-scrollbar-thumb {
+	background-color: #212529;
 }
 
 </style>

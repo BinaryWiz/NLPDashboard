@@ -1,19 +1,27 @@
 <template>
-  <div id="container">
+  <div id="container" :class="matchClass">
     <div id="title-container">
       <h1>Title One: {{ titleOne }}</h1>
       <h1>Title Two: {{ titleTwo }}</h1>
     </div>
     <div id="percentage">
-      <h1 id="percentage-title">Match %</h1>
-      <p id="match-percentage">{{ matchPercentage }}</p>
+      <h1 id="percentage-title">Match Percent</h1>
+      <p id="match-percentage">{{ matchPercentage }}%</p>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['titleOne', 'titleTwo', 'matchPercentage']
+  props: ['titleOne', 'titleTwo', 'matchPercentage'],
+  computed: {
+    matchClass () {
+      return {
+        match: this.matchPercentage >= 0.5,
+        'no-match': this.matchPercentage < 0.5
+      }
+    }
+  }
 }
 </script>
 
@@ -31,6 +39,14 @@ export default {
   -moz-box-shadow: 10px 10px 8px -10px rgba(222,222,222,0.3);
   box-shadow: 10px 10px 8px -10px rgba(222,222,222,0.3);
   transition: all 0.3s;
+}
+
+.match {
+  border-left: 5px solid red;
+}
+
+.no-match {
+  border-left: 5px solid green;
 }
 
 #container:hover {
