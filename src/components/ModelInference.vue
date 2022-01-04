@@ -24,6 +24,17 @@
         <button class="btn btn-dark" type="button" id="button-addon2" @click="sendTitles()">Compare</button>
       </div>
     </div>
+
+    <div id="titles-container">
+      <pair-title-inference
+       :titleOne="'Lenovo 2021 Newest Ideapad 3 Laptop, 15.6 Full HD 1080P Non-Touch Display, AMD Ryzen 3 3250U Processor, 8GB DDR4 RAM, 128GB PCIe NVMe SSD, Webcam, Wi-Fi, HDMI, Windows 10 Home, KKE Mousepad, Grey'"
+       :titleTwo="'HP 15-inch Laptop, 11th Generation Intel Core i5-1135G7, Intel Iris Xe Graphics, 8 GB RAM, 256 GB SSD, Windows 11 Home (15-dy2024nr, Natural silver)'"
+       :matchPercentage="'72%'" />
+      <pair-title-inference
+       :titleOne="'Lenovo 2021 Newest Ideapad 3 Laptop, 15.6 Full HD 1080P Non-Touch Display, AMD Ryzen 3 3250U Processor, 8GB DDR4 RAM, 128GB PCIe NVMe SSD, Webcam, Wi-Fi, HDMI, Windows 10 Home, KKE Mousepad, Grey'"
+       :titleTwo="'HP 15-inch Laptop, 11th Generation Intel Core i5-1135G7, Intel Iris Xe Graphics, 8 GB RAM, 256 GB SSD, Windows 11 Home (15-dy2024nr, Natural silver)'"
+       :matchPercentage="'72%'" />
+    </div>
   </div>
 </template>
 
@@ -92,6 +103,14 @@ export default {
 
 #title > button {
   margin-left: 20px;
+}
+
+#titles-container {
+  width: 100%;
+  display: flex;
+  margin-top: 10px;
+  flex-flow: column;
+  align-items: center;
 }
 
 </style>
