@@ -17,8 +17,8 @@ export default {
   computed: {
     matchClass () {
       return {
-        match: this.matchPercentage >= 0.5,
-        'no-match': this.matchPercentage < 0.5
+        match: this.matchPercentage >= 50,
+        'no-match': this.matchPercentage < 50
       }
     }
   }
@@ -34,7 +34,6 @@ export default {
   padding-right: 15px;
   padding-left: 15px;
   border-radius: 9px;
-  border: 1px solid rgba(222,222,222,0.3);
   -webkit-box-shadow: 10px 10px 8px -10px rgba(222,222,222,0.3);
   -moz-box-shadow: 10px 10px 8px -10px rgba(222,222,222,0.3);
   box-shadow: 10px 10px 8px -10px rgba(222,222,222,0.3);
@@ -42,11 +41,13 @@ export default {
 }
 
 .match {
-  border-left: 5px solid red;
+  border: 1px solid rgba(222,222,222,0.3);
+  border-left: 5px solid rgb(0, 207, 0);
 }
 
 .no-match {
-  border-left: 5px solid green;
+  border: 1px solid rgba(222,222,222,0.3);
+  border-left: 5px solid red;
 }
 
 #container:hover {
@@ -58,10 +59,13 @@ export default {
 }
 
 #title-container {
+  flex-grow: 1;
   border-right: 1px solid gray;
 }
 
 #title-container > h1 {
+  display: flex;
+  flex-flow: column;
   font-size: 16px;
 }
 

@@ -3,9 +3,11 @@
     <div id="heading">
       <div id="title">
         <p>Model Inference</p>
-        <button type="button" class="btn btn-dark">Switch To Cluster</button>
+        <button type="button" class="btn btn-dark" v-if="view == 'pair'" @click="view = 'multiple titles'">Switch To Multiple Titles</button>
+        <button type="button" class="btn btn-dark" v-if="view == 'multiple titles'" @click="view = 'pair'">Switch To Pair Titles</button>
+        <button type="button" class="btn btn-dark" v-if="view == 'cluster'" @click="view = 'pair'">Switch To Pair Titles</button>
       </div>
-      <div class="input-group mt-3 mb-3">
+      <div class="input-group mt-3 mb-3" v-if="view == 'pair'">
         <span class="input-group-text bg-dark text-white">Titles</span>
         <input
          v-model="title1"
@@ -23,13 +25,33 @@
          aria-describedby="button-addon2">
         <button class="btn btn-dark" type="button" id="button-addon2" @click="sendTitles()">Compare</button>
       </div>
+      <div class="input-group mt-3 mb-3" v-if="view == 'multiple titles'">
+        <span class="input-group-text bg-dark text-white">Titles</span>
+        <input
+         v-model="title1"
+         type="text"
+         class="form-control"
+         placeholder="Comparison Title"
+         aria-label="Title 1"
+         aria-describedby="button-addon2">
+        <textarea placeholder="Titles to Compare" v-model="multipleTitles" class="form-control" rows="3"></textarea>
+        <button class="btn btn-dark" type="button" id="button-addon2" @click="sendMultipleTitles()">Compare</button>
+      </div>
+      <div class="input-group mt-3 mb-3" v-if="view == 'cluster'">
+        <span class="input-group-text bg-dark text-white">Titles</span>
+        <textarea v-model="clusterTitles" class="form-control" rows="5"></textarea>
+        <button class="btn btn-dark" type="button" id="button-addon2" @click="getClusters()">Compare</button>
+      </div>
     </div>
 
-    <div id="titles-container">
+    <div class="response-container" v-if="view == 'pair' || view == 'multiple titles'">
       <pair-title-inference v-for="pair in titlePairs" :key="pair.titleOne + pair.titleTwo"
        :titleOne="pair.titleOne"
        :titleTwo="pair.titleTwo"
        :matchPercentage="pair.percent" />
+    </div>
+    <div class="response-container" v-if="view == 'cluster'">
+      <clusters-container v-for="group in groups" :key="group" :clusters="group"></clusters-container>
     </div>
   </div>
 </template>
@@ -37,15 +59,21 @@
 <script>
 import axios from 'axios'
 import PairTitleInference from './PairTitleInference.vue'
+import ClustersContainer from './ClustersContainer.vue'
 export default {
   components: {
-    'pair-title-inference': PairTitleInference
+    'pair-title-inference': PairTitleInference,
+    ClustersContainer
   },
   data () {
     return {
+      view: 'pair',
       titlePairs: [],
       title1: '',
-      title2: ''
+      title2: '',
+      clusterTitles: '',
+      multipleTitles: '',
+      groups: []
     }
   },
   methods: {
@@ -62,6 +90,35 @@ export default {
       }).finally(() => {
         this.title1 = ''
         this.title2 = ''
+      })
+    },
+    sendMultipleTitles () {
+      axios.post('http://localhost:5004/price-assist/api/product-matcher', {
+        title: this.title1,
+        data: this.multipleTitles.split('\n')
+      }).then(response => {
+        this.multipleTitles.split('\n').forEach(title => {
+          console.log(title)
+          this.titlePairs.push({
+            titleOne: this.title1,
+            titleTwo: title,
+            percent: Math.round(response.data[title] * 100)
+          })
+        })
+      }).finally(() => {
+        this.title1 = ''
+        this.multipleTitles = ''
+      })
+    },
+    getClusters() {
+      const titles = this.clusterTitles.split('\n')
+      axios.post('http://localhost:5004/price-assist/api/cluster', {
+        data: titles
+      }).then(response => {
+        console.log(response.data.clusters)
+        this.groups.push(response.data.clusters)
+      }).finally(() => {
+        this.clusterTitles = ''
       })
     }
   }
@@ -113,7 +170,7 @@ export default {
   margin-left: 20px;
 }
 
-#titles-container {
+.response-container {
   width: 100%;
   display: flex;
   margin-top: 10px;
@@ -123,18 +180,18 @@ export default {
   border-radius: 15px;
 }
 
-#titles-container::-webkit-scrollbar-track {
+.response-container::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px rgba(18, 105, 163, 0.3);
 	-webkit-box-shadow: inset 0 0 6px rgba(18, 105, 163, 0.3);
 	background-color: #F5F5F5;
 }
 
-#titles-container::-webkit-scrollbar {
+.response-container::-webkit-scrollbar {
 	width: 11px;
 	background-color: #F5F5F5;
 }
 
-#titles-container::-webkit-scrollbar-thumb {
+.response-container::-webkit-scrollbar-thumb {
 	background-color: #212529;
 }
 
