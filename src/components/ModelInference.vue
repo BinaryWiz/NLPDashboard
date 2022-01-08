@@ -6,6 +6,7 @@
         <button type="button" class="btn btn-dark" v-if="view == 'pair'" @click="view = 'multiple titles'">Switch To Multiple Titles</button>
         <button type="button" class="btn btn-dark" v-if="view == 'multiple titles'" @click="view = 'pair'">Switch To Pair Titles</button>
         <button type="button" class="btn btn-dark" v-if="view == 'cluster'" @click="view = 'pair'">Switch To Pair Titles</button>
+        <button type="button" class="btn btn-dark" @click="titlePairs = []">Clear Output</button>
       </div>
       <div class="input-group mt-3 mb-3" v-if="view == 'pair'">
         <span class="input-group-text bg-dark text-white">Titles</span>
